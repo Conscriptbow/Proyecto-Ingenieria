@@ -16,13 +16,12 @@ def design():
     st.set_option('deprecation.showfileUploaderEncoding',False)
     title_container = st.container()
     col1, col3 = st.columns([15, 5])
-    image = Image.open(r'C:\Users\Jesus\Desktop\Proyecto ingenieria Software\cecytem.jpg')
-    logmx = Image.open(r'C:\Users\Jesus\Desktop\Proyecto ingenieria Software\mx2.jpg')
+    
     with title_container:
         with col1:
-                st.image(image, width=150)
+                st.image('https://seeklogo.com/images/C/cecytem-logo-57EA94498B-seeklogo.com.png', width=150)
         with col3:
-                st.image(logmx, width=150)
+                st.image('https://www.paratodomexico.com/imagenes/estados-de-mexico/mexico/escudo_estado_mexico.png', width=150)
     st.markdown("<h1 style='text-align: center;'>Colegio de Estudios Científicos y Tecnológicos del Estado de México</h1>", unsafe_allow_html=True)
     #st.video('https://www.youtube.com/watch?v=8K_9mlscRfg&ab_channel=VIDEOSDEIMPACTO')
 
