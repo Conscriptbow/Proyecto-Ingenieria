@@ -4,9 +4,13 @@ import streamlit as st
 import plotly_express as px
 import pandas as pd
 from PIL import Image
+import sqlite3
+conn = sqlite3.connect('data.db')
+c = conn.cursor()
 
 #DISEÑO
 def design():
+    #TITULO    
     st.set_option('deprecation.showfileUploaderEncoding',False)
     title_container = st.container()
     col1, col3 = st.columns([15, 5])
@@ -17,7 +21,8 @@ def design():
                 st.image(image, width=150)
         with col3:
                 st.image(logmx, width=150)
-    st.markdown("<h1 style='text-align: center; color: white;'>Colegio de Estudios Científicos y Tecnológicos del Estado de México</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>Colegio de Estudios Científicos y Tecnológicos del Estado de México</h1>", unsafe_allow_html=True)
+    #st.video('https://www.youtube.com/watch?v=8K_9mlscRfg&ab_channel=VIDEOSDEIMPACTO')
 
 #BARRA AJUSTES Y LECTURA ARCHIVO
 def lectura_archivo():
@@ -38,16 +43,19 @@ def lectura_archivo():
     try:
         st.write(datos)# tipos de datos del df, seleccion de columns
         cols_num = list(datos.select_dtypes(['float','int','object']).columns)
-        #cols_numNoNumericas = list(datos.select_dtypes(['object']).columns)
+        cols_numNoNumericas = st.multiselect('Opciones: ',datos.select_dtypes(['object']).columns)
+        #resul = datos.loc[datos['P1'] <= 5]
+        st.write('Has seleccionado: ', datos.iloc[:,[6,11]])
     except Exception as e:
         print(e)
         st.write("Porfavor suba su archivo a la aplicación")
 
     #SELECCIONAR GRAFICO
-    sel_graf = st.selectbox("Selecciona el tipo de gráfico: ",["Barras","Histograma"])
+    filtro = datos.drop_duplicates(datos.columns[~datos.columns.isin(['Profesor'])])
+    #filtro = datos.drop_duplicates(datos.iloc[:,[6]],dtype='object')
+    st.write("Datos filtrados: ", filtro)
 
-    if sel_graf == 'Barras':
-            st.subheader("Gráfico de barras:")
+    st.subheader("Gráfico de barras:")
     try:
             x_val = st.selectbox('Seleccione x: ', options = cols_num)
             y_val = st.selectbox('Seleccione y: ', options = cols_num)
@@ -58,10 +66,6 @@ def lectura_archivo():
         print(e)
 
 #BD BASA EN DISCO
-import sqlite3
-conn = sqlite3.connect('data.db')
-c = conn.cursor()
-
 def create_usertable():
     c.execute('CREATE TABLE IF NOT EXISTS userstable(username TEXT,password TEXT)')
 
