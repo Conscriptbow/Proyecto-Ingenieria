@@ -39,6 +39,7 @@ def lectura_archivo():
         try:
             datos = pd.read_csv(archivo_cargado)
         except Exception as e:
+            st.subheader("TABLA CECYTEM: ")
             print(e)
             datos = pd.read_excel(archivo_cargado)
     global cols_num
@@ -50,6 +51,7 @@ def lectura_archivo():
         grupo = st.sidebar.multiselect("Seleccione el grupo: ", options=datos["Grupo"].unique())
         asignatura = st.sidebar.multiselect("Seleccione la asignatura: ", options=datos["Asignatura"].unique())
         datos_selection = datos.query("Grupo==@grupo and Semestre == @semestre and Carrera == @carrera and Asignatura == @asignatura")
+        st.subheader("TABLA CON DATOS FILTRADOS: ")
         st.dataframe(datos_selection)
         grupoMatutino = datos.loc[datos['Grupo'] < 500]
         st.subheader("TABLA TURNO MATUTINO: ")
