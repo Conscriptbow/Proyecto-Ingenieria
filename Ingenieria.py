@@ -6,6 +6,8 @@ import pandas as pd
 from PIL import Image
 import sqlite3
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 conn = sqlite3.connect('data.db')
 c = conn.cursor()
 
@@ -34,22 +36,25 @@ def lectura_archivo():
     if archivo_cargado is not None:
         print(archivo_cargado)
         try:
-            datos = pd.read_csv(archivo_cargado)
-	    datos = datos.replace(np.nan,0)
+            datos = pd.read_csv(archivo_cargado)   
         except Exception as e:
             st.subheader("TABLA CECYTEM: ")
             print(e)
             datos = pd.read_excel(archivo_cargado)
-	    datos = datos.replace(np.nan,0)
+
     global cols_num
     try:
         st.write(datos)# tipos de datos del df, seleccion de columns
         cols_num = list(datos.select_dtypes(['float','int','object']).columns)
+        prueba1 = datos.describe()
+        st.subheader("DATOS RESUMIDOS: ")
+        prueba = prueba1.iloc[[1,3,4,5,6, 7],[3,4,5,7]]
+        prueba
         semestre = st.sidebar.multiselect("Seleccione el semestre: ", options=datos["Semestre"].unique())
         carrera = st.sidebar.multiselect("Seleccione la carrera: ", options=datos["Carrera"].unique())
         grupo = st.sidebar.multiselect("Seleccione el grupo: ", options=datos["Grupo"].unique())
         asignatura = st.sidebar.multiselect("Seleccione la asignatura: ", options=datos["Asignatura"].unique())
-        datos_selection = datos.query("Grupo==@grupo and Semestre == @semestre and Carrera == @carrera and Asignatura == @asignatura")
+        datos_selection = datos.query("Grupo==@grupo and Semestre==@semestre and Carrera == @carrera and Asignatura == @asignatura")
         st.subheader("TABLA CON DATOS FILTRADOS: ")
         st.dataframe(datos_selection)
         grupoMatutino = datos.loc[datos['Grupo'] < 500]
@@ -58,6 +63,10 @@ def lectura_archivo():
         grupoTarde = datos.loc[datos['Grupo'] >= 500]
         st.subheader("TABLA TURNO VESPERTINO: ")
         st.dataframe(grupoTarde)
+
+        #Promedio por grupo
+        ndf = datos.pivot_table(index = ['Grupo', 'Carrera'],columns=['Asignatura', 'Semestre'],aggfunc={'P1':np.average,'P2':np.average})
+        ndf
         #resul = datos.loc[datos['P1'] <= 5]
         #st.write('Has seleccionado: ', datos.iloc[:,[6,11]])
     except Exception as e:
@@ -70,11 +79,13 @@ def lectura_archivo():
     #st.write("Datos filtrados: ", filtro)
 
     st.subheader("Gráfico de barras:")
+    st.subheader("Boxplot")
     try:
-            x_val = st.selectbox('Seleccione x: ', options = cols_num)
-            y_val = st.selectbox('Seleccione y: ', options = cols_num)
-            plot = px.bar(data_frame=datos, x=x_val,y=y_val,width=600, height=400)
+            x_val = st.selectbox('Seleccione x: ', options = ['P1', 'P2', 'P3', 'FIN'])
+            y_val = st.selectbox('Seleccione y: ', options = ['Carrera', 'Semestre','Grupo'])
+            plot = px.box(data_frame=datos, x=x_val,y=y_val,width=600, height=400)
             st.plotly_chart(plot)
+            
     
     except Exception as e:
         print(e)
