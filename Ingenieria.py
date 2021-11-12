@@ -14,7 +14,6 @@ def design():
     st.set_option('deprecation.showfileUploaderEncoding',False)
     title_container = st.container()
     col1, col3 = st.columns([15, 5])
-    
     with title_container:
         with col1:
                 st.image('https://seeklogo.com/images/C/cecytem-logo-57EA94498B-seeklogo.com.png', width=150)
@@ -78,18 +77,19 @@ def lectura_archivo():
         print(e)
 
 #BD BASA EN DISCO
+    #CREAR TABLA BD
 def create_usertable():
     c.execute('CREATE TABLE IF NOT EXISTS userstable(username TEXT,password TEXT)')
-
+    #AGREGAR USER Y PASSWORD
 def add_userdata(username,password):
 	c.execute('INSERT INTO userstable(username,password) VALUES (?,?)',(username,password))
 	conn.commit()
-
+    #LOGIN
 def login_user(username,password):
 	c.execute('SELECT * FROM userstable WHERE username =? AND password = ?',(username,password))
 	data = c.fetchall()
 	return data
-
+    #VER TODOS LOS USUARIOS
 def view_all_users():
 	c.execute('SELECT * FROM userstable')
 	data = c.fetchall()
@@ -113,16 +113,16 @@ def seguridad():
             if result:
                 st.success("Te has logeado como: {}".format(username))                          
                 lectura_archivo()
-                #task = st.selectbox("Opciones:", ["Add Post", "Analytics", "Profiles"])
+                task = st.selectbox("Opciones:", ["Add Post", "Analytics", "Profiles"])
                 #if task == "Add Post":
                  #   st.subheader("Add Your Post")
                 #elif task == "Analytics":
                 #    st.subheader("Analytics")
-                #elif task == "Profiles":
-                 #   st.subheader("User Profiles")
-                 #   user_result = view_all_users()
-                  #  clean_db = pd.DataFrame(user_result,columns = ["Username", "Password"])
-                  #  st.dataframe(clean_db)
+                #if task == "Profiles":
+                   #""" st.subheader("User Profiles")
+                   # user_result = view_all_users()
+                   # clean_db = pd.DataFrame(user_result,columns = ["Username", "Password"])
+                   # st.dataframe(clean_db)"""
             else:
                 st.warning("Incorrect Username/Password")
 
@@ -136,15 +136,6 @@ def seguridad():
             add_userdata(new_user, new_password)
             st.success("New account")
             st.info("Go to login menu, to login")
-
-#USUARIO Y CONTRASEÑA
-def autorizacion():
-    usuario = st.text_input("Usuario:", "")
-    password = st.text_input("Contrasena:")
-    while True:
-        if usuario == "yo" and password == "contra":
-            
-            break
 
 #FUNCION PRINCIPAL        
 seguridad()
