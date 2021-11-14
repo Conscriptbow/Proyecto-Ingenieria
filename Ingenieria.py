@@ -48,7 +48,7 @@ def lectura_archivo():
         cols_num = list(datos.select_dtypes(['float','int','object']).columns)
         prueba1 = datos.describe()
         st.subheader("DATOS RESUMIDOS: ")
-        prueba = prueba1.iloc[[1,3,4,5,6, 7],[3,4,5,7]]
+        prueba = prueba1.iloc[[1,3,4,5,6,7],[3,4,5,7]]
         prueba
         semestre = st.sidebar.multiselect("Seleccione el semestre: ", options=datos["Semestre"].unique())
         carrera = st.sidebar.multiselect("Seleccione la carrera: ", options=datos["Carrera"].unique())
@@ -57,12 +57,46 @@ def lectura_archivo():
         datos_selection = datos.query("Grupo==@grupo and Semestre==@semestre and Carrera == @carrera and Asignatura == @asignatura")
         st.subheader("TABLA CON DATOS FILTRADOS: ")
         st.dataframe(datos_selection)
-        grupoMatutino = datos.loc[datos['Grupo'] < 500]
+        a=100
+        frames = []
+        for i in range(0,6):
+            if a == 104:
+                a=200
+            elif a == 204:
+                a=300
+            elif a == 304:
+                a=400
+            elif a == 404:
+                a=500
+            elif a==504:
+                a=600
+            for j in range(0,4):
+                a = a + 1
+                grupoMatutino = datos.loc[datos['Grupo'] == a]
+                frames.append(grupoMatutino)
+        df = pd.concat(frames, sort=False)
         st.subheader("TABLA TURNO MATUTINO: ")
-        st.dataframe(grupoMatutino)
-        grupoTarde = datos.loc[datos['Grupo'] >= 500]
+        st.dataframe(df)
+        a=104
+        frames2 = []
+        for i in range(0,6):
+            if a == 108:
+                a=204
+            elif a == 208:
+                a=304
+            elif a == 308:
+                a=404
+            elif a == 408:
+                a=504
+            elif a==508:
+                a=604
+            for j in range(0,4):
+                a = a + 1
+                grupoTarde = datos.loc[datos['Grupo'] == a]
+                frames2.append(grupoTarde)
+        dc = pd.concat(frames2, sort = False)
         st.subheader("TABLA TURNO VESPERTINO: ")
-        st.dataframe(grupoTarde)
+        st.dataframe(dc)
 
         #Promedio por grupo
         ndf = datos.pivot_table(index = ['Grupo', 'Carrera'],columns=['Asignatura', 'Semestre'],aggfunc={'P1':np.average,'P2':np.average})
