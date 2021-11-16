@@ -193,19 +193,87 @@ def grafico():
         print(e)
 
 def Aprobacion():
+    pruebasP = []
+
+    for i in range(0, len(datos)):
+        if datos.empty:
+            continue
+        pruebas = datos['Plantel'].unique()
+        pruebasP.append(pruebas)
+
+    #################################PLANTEL
+    indicePlantel1 = []
     indiceAproP1 = datos.loc[datos['P1'] >= 6]
     porcentajeP1 = (len(indiceAproP1)*100)/len(datos)
-    indiceReproP1 = datos.loc[datos['P1']<=5]
-    porcentajeReP1 = (len(indiceReproP1)*100)/len(datos)
-    st.subheader("PORCENTAJE DE APROBACIÓN DE P1: " + str(round(porcentajeP1, 2)) 
-                + "% Y PORCENTAJE DE REPROBACIÓN DE P1: " + str(round(porcentajeReP1, 2)) + "%")
-    #P2
+    indicePlantel1.append(porcentajeP1)
+    plantel = pd.DataFrame(data=indicePlantel1)
+    plantel.rename(columns={0:'APROBACIÓN P1(%)'}, inplace=True)
+    for i in range (0, len(plantel)):
+        plantel.rename(index={i:pruebasP[i]}, inplace=True)
+    ################################################
+    indicePlantel2 = []
     indiceAproP2 = datos.loc[datos['P2'] >= 6]
     porcentajeP2 = (len(indiceAproP2)*100)/len(datos)
-    indiceReproP2 = datos.loc[datos['P2']<=5]
-    porcentajeReP2 = (len(indiceReproP2)*100)/len(datos)
-    st.subheader("PORCENTAJE DE APROBACIÓN DE P2: " + str(round(porcentajeP2, 2)) 
-                + "% Y EL PORCENTAJE DE REPROBACIÓN DE P2: " + str(round(porcentajeReP2, 2)) + "%")
+    indicePlantel2.append(porcentajeP2)
+    plantel2 = pd.DataFrame(data=indicePlantel2)
+    plantel2.rename(columns={0:'APROBACIÓN P2(%)'}, inplace=True)
+    for i in range (0, len(plantel2)):
+        plantel2.rename(index={i:pruebasP[i]}, inplace=True)
+    ##########################################################################
+    indicePlantel3 = []
+    indiceAproP3 = datos.loc[datos['P3'] >= 6]
+    porcentajeP3 = (len(indiceAproP3)*100)/len(datos)
+    indicePlantel3.append(porcentajeP3)
+    plantel3 = pd.DataFrame(data=indicePlantel3)
+    plantel3.rename(columns={0:'APROBACIÓN P3(%)'}, inplace=True)
+    for i in range (0, len(plantel3)):
+        plantel3.rename(index={i:pruebasP[i]}, inplace=True)
+    ##########################################################################
+    indicePlantelFin = []
+    indiceAproFin = datos.loc[datos['FIN'] >= 6]
+    porcentajePFin = (len(indiceAproFin)*100)/len(datos)
+    indicePlantelFin.append(porcentajePFin)
+    plantelFin = pd.DataFrame(data=indicePlantelFin)
+    plantelFin.rename(columns={0:'APROBACIÓN FIN(%)'}, inplace=True)
+    for i in range (0, len(plantelFin)):
+        plantelFin.rename(index={i:pruebasP[i]}, inplace=True)
+    ############################################################################
+    indicePlantelR = []
+    indiceRP1 = datos.loc[datos['P1']<=5]
+    porcentajeRP1 = (len(indiceRP1)*100)/len(datos)
+    indicePlantelR.append(porcentajeRP1)
+    plantelR=pd.DataFrame(data=indicePlantelR)
+    plantelR.rename(columns={0:'REPROBACIÓN P1 (%)'}, inplace=True)
+    for i in range (0, len(plantelR)):
+        plantelR.rename(index={i:pruebasP[i]}, inplace=True)
+    #########################################################################
+    indicePlantelR2 = []
+    indiceRP2 = datos.loc[datos['P2']<=5]
+    porcentajeRP2 = (len(indiceRP2)*100)/len(datos)
+    indicePlantelR2.append(porcentajeRP2)
+    plantelR2=pd.DataFrame(data=indicePlantelR2)
+    plantelR2.rename(columns={0:'REPROBACIÓN P2 (%)'}, inplace=True)
+    for i in range (0, len(plantelR2)):
+        plantelR2.rename(index={i:pruebasP[i]}, inplace=True)
+    ############################################################################
+    indicePlantelR3 = []
+    indiceRP3 = datos.loc[datos['P3']<=5]
+    porcentajeRP3 = (len(indiceRP3)*100)/len(datos)
+    indicePlantelR3.append(porcentajeRP3)
+    plantelR3=pd.DataFrame(data=indicePlantelR3)
+    plantelR3.rename(columns={0:'REPROBACIÓN P3 (%)'}, inplace=True)
+    for i in range (0, len(plantelR3)):
+        plantelR3.rename(index={i:pruebasP[i]}, inplace=True)
+    ############################################################################
+    indicePlantelRFin = []
+    indiceRPFin = datos.loc[datos['FIN']<=5]
+    porcentajeRFin = (len(indiceRPFin)*100)/len(datos)
+    indicePlantelRFin.append(porcentajeRFin)
+    plantelRFin=pd.DataFrame(data=indicePlantelRFin)
+    plantelRFin.rename(columns={0:'REPROBACIÓN FIN (%)'}, inplace=True)
+    for i in range (0, len(plantelRFin)):
+        plantelRFin.rename(index={i:pruebasP[i]}, inplace=True)
+    ###########################################################################
 
     a=100
     frames = []
@@ -496,6 +564,8 @@ def Aprobacion():
         pruebas = frames[i]['Plantel'].unique()
         pruebasP.append(pruebas)
     ########################################################################## Impresión dataframes
+    pf = pd.concat([plantel, plantel2, plantel3, plantelFin, plantelR, plantelR2, plantelR3, plantelRFin], axis=1)
+    pf
     st.subheader("INDICE DE APROBACIÓN Y REPROBACIÓN MATUTINO")
     df = pd.concat([mañana, mañanap2, mañanap3, mañanafin, mañanaR, mañanaR2, mañanaR3, mañanaRFin], axis=1)
     df
