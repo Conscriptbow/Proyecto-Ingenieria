@@ -424,12 +424,12 @@ def Aprobacion():
     tardeP3=pd.DataFrame(data=indiceTardeP3)
     tardeP3.rename(columns={0:'APROBACIÓN P3(%)'}, inplace=True)
 
-    for i in range (0, len(tarde)):
+    for i in range (0, len(tardeP3)):
         tardeP3.rename(index={i:int(pruebast[i])}, inplace=True)
     #########################################################
     indiceTardeFin = []
     for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['P3']>=6]
+        segundoGrupo=frames2[i].loc[frames2[i]['FIN']>=6]
         if segundoGrupo.empty:
             continue
         porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
@@ -539,30 +539,22 @@ def Aprobacion():
     tardeR3=pd.DataFrame(data=indiceTardeR3)
     tardeR3.rename(columns={0:'REPROBACIÓN P3(%)'}, inplace=True)
 
-    for i in range (0, len(tarde)):
+    for i in range (0, len(tardeR3)):
         tardeR3.rename(index={i:int(pruebast[i])}, inplace=True)
     #################################################################
     indiceTardeRFin = []
     for i in range(0, len(frames2)):
-        segundoGrupo=frames2[i].loc[frames2[i]['P3']<=5]
+        segundoGrupo=frames2[i].loc[frames2[i]['FIN']<=5]
         if segundoGrupo.empty:
             continue
         porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
         indiceTardeRFin.append(porcentaje)
 
     tardeRFin=pd.DataFrame(data=indiceTardeRFin)
-    tardeRFin.rename(columns={0:'REPROBACIÓN P3(%)'}, inplace=True)
+    tardeRFin.rename(columns={0:'REPROBACIÓN FINAL(%)'}, inplace=True)
 
-    for i in range (0, len(tarde)):
+    for i in range (0, len(tardeRFin)):
         tardeRFin.rename(index={i:int(pruebast[i])}, inplace=True)
-    ######################################################################### Plantel
-    pruebasP = []
-
-    for i in range(0, len(frames)):
-        if frames[i].empty:
-            continue
-        pruebas = frames[i]['Plantel'].unique()
-        pruebasP.append(pruebas)
     ########################################################################## Impresión dataframes
     pf = pd.concat([plantel, plantel2, plantel3, plantelFin, plantelR, plantelR2, plantelR3, plantelRFin], axis=1)
     pf
