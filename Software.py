@@ -55,16 +55,23 @@ def lectura_archivo():
         grupo = st.sidebar.multiselect("Seleccione el grupo: ", options=datos["Grupo"].unique())
         asignatura = st.sidebar.multiselect("Seleccione la asignatura: ", options=datos["Asignatura"].unique())
         datos_selection = datos.query("Grupo==@grupo and Semestre==@semestre and Carrera == @carrera and Asignatura == @asignatura")
+        #Indice aprobación todo los datos
+        Aprobacion()
+        #DATOS RESUMIDOS
+        prueba1 = datos.describe()
+        st.subheader("DATOS RESUMIDOS: ")
+        prueba = prueba1.iloc[[1,3,4,5,6,7],[3,4,5,7]]
+        prueba
+        #Promedio por grupo, materia...
+        st.subheader("PROMEDIOS: ")
+        ndf = datos.pivot_table(index = ['Grupo', 'Carrera'],columns=['Asignatura', 'Semestre'],aggfunc={'P1':np.average,'P2':np.average})
+        ndf
         try:
+            st.subheader("TABLA CON DATOS FILTRADOS: ")
+            st.dataframe(datos_selection)
             choice =st.selectbox("Seleccione el turno: ", menu)
             if choice == "Turno Matutino":
                 cols_num = list(datos.select_dtypes(['float','int','object']).columns)
-                prueba1 = datos.describe()
-                st.subheader("DATOS RESUMIDOS: ")
-                prueba = prueba1.iloc[[1,3,4,5,6,7],[3,4,5,7]]
-                prueba
-                st.subheader("TABLA CON DATOS FILTRADOS: ")
-                st.dataframe(datos_selection)
                 a=100
                 frames = []
                 for i in range(0,6):
@@ -107,9 +114,6 @@ def lectura_archivo():
                 dc = pd.concat(frames2, sort = False)
                 st.subheader("TABLA TURNO VESPERTINO: ")
                 st.dataframe(dc)
-                #Promedio por grupo
-                ndf = datos.pivot_table(index = ['Grupo', 'Carrera'],columns=['Asignatura', 'Semestre'],aggfunc={'P1':np.average,'P2':np.average})
-                ndf
                 grafico()
         except Exception as e:
             print(e)
@@ -187,5 +191,103 @@ def grafico():
             st.plotly_chart(plot)
     except Exception as e:
         print(e)
+
+def Aprobacion():
+    indiceAproP1 = datos.loc[datos['P1'] >= 6]
+    porcentajeP1 = (len(indiceAproP1)*100)/len(datos)
+    indiceReproP1 = datos.loc[datos['P1']<=5]
+    porcentajeReP1 = (len(indiceReproP1)*100)/len(datos)
+    st.subheader("PORCENTAJE DE APROBACIÓN DE P1: " + str(round(porcentajeP1, 2)) 
+                + "% Y PORCENTAJE DE REPROBACIÓN DE P1: " + str(round(porcentajeReP1, 2)) + "%")
+    #P2
+    indiceAproP2 = datos.loc[datos['P2'] >= 6]
+    porcentajeP2 = (len(indiceAproP2)*100)/len(datos)
+    indiceReproP2 = datos.loc[datos['P2']<=5]
+    porcentajeReP2 = (len(indiceReproP2)*100)/len(datos)
+    st.subheader("PORCENTAJE DE APROBACIÓN DE P2: " + str(round(porcentajeP2, 2)) 
+                + "% Y EL PORCENTAJE DE REPROBACIÓN DE P2: " + str(round(porcentajeReP2, 2)) + "%")
+
+    a=100
+    frames = []
+    for i in range(0,6):
+        if a == 104:
+            a=200
+        elif a == 204:
+            a=300
+        elif a == 304:
+            a=400
+        elif a == 404:
+            a=500
+        elif a==504:
+            a=600
+        for j in range(0,4):
+            a = a + 1
+            grupoMatutino = datos.loc[datos['Grupo'] == a]
+            frames.append(grupoMatutino)
+            
+    a=104
+    frames2 = []
+    for i in range(0,6):
+        if a == 108:
+            a=204
+        elif a == 208:
+            a=304
+        elif a == 308:
+             a=404
+        elif a == 408:
+            a=504
+        elif a==508:
+            a=604
+        for j in range(0,4):
+            a = a + 1
+            grupoTarde = datos.loc[datos['Grupo'] == a]
+            frames2.append(grupoTarde)
+    
+
+    indiceMañana = []
+    for i in range(0, len(frames)):
+        primerGrupo=frames[i].loc[frames[i]['P1']>=6]
+        if primerGrupo.empty:
+            continue
+        porcentaje = (len(primerGrupo)*100)/len(frames[i])
+        indiceMañana.append(porcentaje)
+
+    mañana=pd.DataFrame(data=indiceMañana)
+    mañana.rename(columns={0:'APROBACIÓN (%)'}, inplace=True)
+
+    pruebasm = []
+
+    for i in range(0, len(frames)):
+        if frames[i].empty:
+            continue
+        pruebas = frames[i]['Grupo'].unique()
+        pruebasm.append(pruebas)
+
+    for i in range (0, len(mañana)):
+        mañana.rename(index={i:int(pruebasm[i])}, inplace=True)
+
+    mañana
+
+    indiceTarde = []
+    for i in range(0, len(frames2)):
+        segundoGrupo=frames2[i].loc[frames2[i]['P1']>=6]
+        if segundoGrupo.empty:
+            continue
+        porcentaje = (len(segundoGrupo)*100)/len(frames2[i])
+        indiceTarde.append(porcentaje)
+
+    tarde=pd.DataFrame(data=indiceTarde)
+    tarde.rename(columns={0:'APROBACIÓN (%)'}, inplace=True)
+
+    pruebast = []
+    for i in range(0, len(frames2)):
+        if frames2[i].empty:
+            continue
+        pruebas = frames2[i]['Grupo'].unique()
+        pruebast.append(pruebas)
+
+    for i in range (0, len(tarde)):
+        tarde.rename(index={i:int(pruebast[i])}, inplace=True)
+    tarde
 #FUNCION PRINCIPAL        
 seguridad()
