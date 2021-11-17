@@ -6,7 +6,6 @@ import pandas as pd
 from PIL import Image
 import sqlite3
 import numpy as np
-import seaborn as sns
 import matplotlib.pyplot as plt
 conn = sqlite3.connect('data.db')
 c = conn.cursor()
