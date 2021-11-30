@@ -12,29 +12,27 @@ matplotlib.use('TkAgg')
 conn = sqlite3.connect('data.db')
 c = conn.cursor()
 
-#BD BASA EN DISCO
 def create_usertable():
     c.execute('CREATE TABLE IF NOT EXISTS userstable(username TEXT,password TEXT)')
-    #AGREGAR USER Y PASSWORD
+
 def add_userdata(username,password):
 	c.execute('INSERT INTO userstable(username,password) VALUES (?,?)',(username,password))
 	conn.commit()
-    #LOGIN
+
 def login_user(username,password):
 	c.execute('SELECT * FROM userstable WHERE username =? AND password = ?',(username,password))
 	data = c.fetchall()
 	return data
-    #CAMBIAR PASSWORD
+
 def change_password(password,username):
     c.execute('UPDATE userstable SET password =? WHERE username =?',(password,username))
     conn.commit()
-    #VER TODOS LOS USUARIOS
+
 def view_all_users():
 	c.execute('SELECT * FROM userstable')
 	data = c.fetchall()
 	return data
 
-#TITULO / IMAGENES / PORTADA 
 def home():   
     st.set_option('deprecation.showfileUploaderEncoding',False)
     md_logo1 = 'https://seeklogo.com/images/C/cecytem-logo-57EA94498B-seeklogo.com.png'
@@ -51,7 +49,6 @@ def home():
     st.markdown("<h1 style='text-align: center;'>Colegio de Estudios Científicos y Tecnológicos del Estado de México</h1>", unsafe_allow_html=True)
     st.markdown('---')
 
-#ACCESO
 def acceder():
     username = st.sidebar.text_input("Nombre de usuario: ")
     password = st.sidebar.text_input("Contraseña: ", type = 'password')
@@ -70,9 +67,7 @@ def acceder():
         if st.checkbox("Cambiar"):
             change_password(new_pass,user) 
             st.success("Se cambio su contraseña")
-    
 
-#SIGN UP
 def sign():
     st.subheader("Crear nueva cuenta:")
     new_user = st.text_input("Nombre de usuario:")
@@ -82,7 +77,6 @@ def sign():
         add_userdata(new_user, new_password)
         st.success("Nueva cuenta creada, puede ingresar")
 
-#BARRA LATERAL --MENU--
 def menu():
     home()
     md_logo3 = 'https://i.ibb.co/VVLf7Xz/STELLASMARGEN.png'
@@ -99,7 +93,6 @@ def menu():
 
     st.sidebar.markdown("<h1 style='text-align: center;'>STELLAS COMPANY | V1.01</h1>", unsafe_allow_html=True)
 
-#INDEICE APROBACION Y REPROBACION POR PLANTEL
 def AprobacionP():
     Plantel = []
     for i in range(0, len(datos)):
@@ -110,7 +103,7 @@ def AprobacionP():
     for i in range(0, len(pruebas)):
         prueba = datos.loc[datos['Plantel'] == pruebas[i]]
         Plantel.append(prueba)
-    #################################PLANTEL
+
     indicePlantel1 = []
     for i in range(0, len(Plantel)):
         indiceAproP1 = Plantel[i].loc[Plantel[i]['P1'] >= 6]
@@ -121,7 +114,7 @@ def AprobacionP():
     plantel.rename(columns={0:'APROBACIÓN P1(%)'}, inplace=True)
     for i in range (0, len(plantel)):
         plantel.rename(index={i:pruebas[i]}, inplace=True)
-    ################################################
+
     indicePlantel2 = []
     for i in range(0, len(Plantel)):
         indiceAproP2 = Plantel[i].loc[Plantel[i]['P2'] >= 6]
@@ -131,7 +124,7 @@ def AprobacionP():
     plantel2.rename(columns={0:'APROBACIÓN P2(%)'}, inplace=True)
     for i in range (0, len(plantel2)):
         plantel2.rename(index={i:pruebas[i]}, inplace=True)
-    ##########################################################################
+
     indicePlantel3 = []
     for i in range(0, len(Plantel)):
         indiceAproP3 = Plantel[i].loc[Plantel[i]['P3'] >= 6]
@@ -141,7 +134,7 @@ def AprobacionP():
     plantel3.rename(columns={0:'APROBACIÓN P3(%)'}, inplace=True)
     for i in range (0, len(plantel3)):
         plantel3.rename(index={i:pruebas[i]}, inplace=True)
-    ##########################################################################
+
     indicePlantelFin = []
     for i in range(0, len(Plantel)):
         indiceAproFin = Plantel[i].loc[Plantel[i]['FIN'] >= 6]
@@ -151,7 +144,7 @@ def AprobacionP():
     plantelFin.rename(columns={0:'APROBACIÓN FIN(%)'}, inplace=True)
     for i in range (0, len(plantelFin)):
         plantelFin.rename(index={i:pruebas[i]}, inplace=True)
-    ############################################################################
+
     indicePlantelR = []
     for i in range(0, len(Plantel)):
         indiceRP1 = Plantel[i].loc[Plantel[i]['P1']<=5]
@@ -161,7 +154,7 @@ def AprobacionP():
     plantelR.rename(columns={0:'REPROBACIÓN P1 (%)'}, inplace=True)
     for i in range (0, len(plantelR)):
         plantelR.rename(index={i:pruebas[i]}, inplace=True)
-    #########################################################################
+ 
     indicePlantelR2 = []
     for i in range(0, len(Plantel)):
         indiceRP2 = Plantel[i].loc[Plantel[i]['P2']<=5]
@@ -171,7 +164,7 @@ def AprobacionP():
     plantelR2.rename(columns={0:'REPROBACIÓN P2 (%)'}, inplace=True)
     for i in range (0, len(plantelR2)):
         plantelR2.rename(index={i:pruebas[i]}, inplace=True)
-    ############################################################################
+
     indicePlantelR3 = []
     for i in range(0, len(Plantel)):
         indiceRP3 = Plantel[i].loc[Plantel[i]['P3']<=5]
@@ -181,7 +174,7 @@ def AprobacionP():
     plantelR3.rename(columns={0:'REPROBACIÓN P3 (%)'}, inplace=True)
     for i in range (0, len(plantelR3)):
         plantelR3.rename(index={i:pruebas[i]}, inplace=True)
-    ############################################################################
+
     indicePlantelRFin = []
     for i in range(0, len(Plantel)):
         indiceRPFin = Plantel[i].loc[Plantel[i]['FIN']<=5]
@@ -191,7 +184,6 @@ def AprobacionP():
     plantelRFin.rename(columns={0:'REPROBACIÓN FIN (%)'}, inplace=True)
     for i in range (0, len(plantelRFin)):
         plantelRFin.rename(index={i:pruebas[i]}, inplace=True)
-    ###########################################################################
     st.subheader("ÍNDICE DE APROBACIÓN Y REPROBACIÓN POR PLANTEL")
     pf = pd.concat([plantel, plantelR, plantel2, plantelR2, plantel3, plantelR3, plantelFin, plantelRFin], axis=1)
     pf
@@ -204,7 +196,6 @@ def AprobacionP():
     st.bar_chart(pf['APROBACIÓN FIN(%)'])
     st.bar_chart(pf['REPROBACIÓN FIN (%)'])
 
-#INDICE APROBACION Y REPROBACION (VESPERTINO)
 def AprobacionGT():
     a=104
     frames2 = []
@@ -356,7 +347,6 @@ def AprobacionGT():
     st.bar_chart(dc['APROBACIÓN FIN(%)'])
     st.bar_chart(dc['REPROBACIÓN FIN(%)'])
 
-#INDICE APROBACIÓN Y REPROBACIÓN (MATUTINO)
 def AprobacionG():
     a=100
     frames = [] 
@@ -506,7 +496,6 @@ def AprobacionG():
     st.bar_chart(df['APROBACIÓN FIN(%)'])
     st.bar_chart(df['REPROBACIÓN FIN(%)'])
 
-#INDICE APROBACIÓN Y REPROBACIÓN POR ASIGNATURA 
 def AprobacionM(): 
     Materias = []
 
@@ -625,8 +614,6 @@ def AprobacionM():
     st.bar_chart(ma['Aprobación FIN(%)'])
     st.bar_chart(ma['Reprobación FIN(%)'])
     
-
-#INDICE APROBACIÓN Y REPROBACIÓN POR PROFESOR 
 def AprobacionPro():
     Profesores = []
 
@@ -648,7 +635,6 @@ def AprobacionPro():
 
     for i in range (0, len(profesor1)):
         profesor1.rename(index={i:str(pruebasA[i])}, inplace=True)
-    
 
     indiceMateriaPr2 = []
     for i in range(0, len(Profesores)):
@@ -747,7 +733,6 @@ def AprobacionPro():
     st.bar_chart(pr['Aprobación FIN(%)'])
     st.bar_chart(pr['Reprobación FIN(%)'])
 
-#INDICE APROBACIÓN Y REPROBACIÓN POR CARRERA 
 def AprobacionCa():
     Carrera = []
 
@@ -867,7 +852,6 @@ def AprobacionCa():
     st.bar_chart(cr['Aprobación FIN(%)'])
     st.bar_chart(cr['Reprobación FIN(%)'])
 
-#CASOS CRITICOS
 def CasosCriticos():
     Fin=datos.loc[datos['FIN']<=5]
 
@@ -901,7 +885,6 @@ def CasosCriticos():
         caso1
         critico
 
-#CASOS DE ABANDONO
 def CasosAbandono(): 
     Fin=datos.loc[datos['FIN']<=5]
     CasosA = []
@@ -933,9 +916,6 @@ def CasosAbandono():
         
         abandono
         
-
-
-#FILTRO DATOS
 def filtro():
     carrera = st.sidebar.multiselect("Seleccione la carrera: ", options=datos["Carrera"].unique())
     grupo = st.sidebar.multiselect("Seleccione el grupo: ", options=datos["Grupo"].unique())
@@ -944,14 +924,12 @@ def filtro():
     st.subheader("TABLA CON DATOS FILTRADOS: ")
     st.dataframe(datos_selection)
 
-#BARRA AJUSTES Y LECTURA ARCHIVO
 def lectura_archivo():
     st.subheader("INSERTAR ARCHIVO:")
-    # CARGA DE ARCHIVOS
     archivo_cargado = st.file_uploader(label="Sube aqui tus archivos CSV o Excel.",
                          type=['csv','xlsx'])
     global datos
-    # si el archivo cargado no es ninguno
+
     if archivo_cargado is not None:
         print(archivo_cargado)
         try:
@@ -973,7 +951,6 @@ def lectura_archivo():
         print(e)
         st.write("Porfavor suba su archivo a la aplicación")
 
-#SUB MENU
 def opciones():
     menu = st.radio("",("Filtro", "Turno Matutino", "Turno Vespertino", "Promedios","Casos críticos","Casos de abandono","Aprobación y reprobación"))
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
@@ -1030,7 +1007,7 @@ def opciones():
             st.subheader("TABLA TURNO VESPERTINO: ")
             st.dataframe(dc)
             graficoVesp()
-            #Promedio por grupo, materia...
+
     elif menu == 'Promedios':
             st.subheader("PROMEDIOS: ")
             ndf = datos.pivot_table(index = ['Grupo', 'Carrera'],columns=['Asignatura', 'Semestre'],aggfunc={'P1':np.average,'P2':np.average})
@@ -1060,7 +1037,6 @@ def opciones():
                 print(e)
                 st.write("Porfavor elija una opción adecuada")
 
-#GRAFICO TURNO MATUTINO
 def graficoMat():
     st.subheader("Gráfico: ")
     try:
@@ -1072,18 +1048,14 @@ def graficoMat():
     except Exception as e:
         print(e)
 
-#GRAFICO TURNO VESPERTINO
 def graficoVesp():
     st.subheader("Gráfico: ")
     try:
             x_val = st.selectbox('Seleccione y: ', options = ['Carrera', 'Semestre','Grupo'])
             y_val = st.selectbox('Seleccione x: ', options = ['P1', 'P2', 'P3', 'FIN'])
-            #plot = px.box(data_frame=datos, x=x_val, y=y_val, color = 'smoker', width=600, height=400)
-            #st.plotly_chart(plot)
-            fig = px.box(dc,y=y_val,x=x_val,color="Semestre",width=750, height=500)
-            st.plotly_chart(fig)
+            plot = px.box(data_frame=datos, x=x_val, y=y_val, color = 'smoker', width=600, height=400)
+            st.plotly_chart(plot)
     except Exception as e:
         print(e)
 
-#DESPLIEGE DEL PROGRAMA
 menu()
