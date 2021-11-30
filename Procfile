@@ -1,1 +1,1 @@
-web: node index.js
+web: sh setup.sh && streamlit run Software.py
